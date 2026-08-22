@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Active Sessions - SOCAction</title>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+</head>
+<body>
+
+<div class="bg-grid" aria-hidden="true"></div>
+
+<header class="navbar">
+  <div class="nav-inner">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true"></div>
+      <div class="brand-title">
+        <strong>SOCAction</strong>
+        <span>Secure Authentication Monitoring</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a class="logout-btn" th:href="@{/dashboard}" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">Back to Dashboard</a>
+      <form th:action="@{/logout}" method="post" style="margin:0;">
+        <button class="logout-btn" type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="page-title">
+    <div>
+      <h1>Active Sessions</h1>
+      <p>Real data from <code>user_sessions</code> table</p>
+    </div>
+  </div>
+
+  <section class="grid grid-table">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title">
+          <h2>Sessions</h2>
+          <div class="sub" th:text="${#lists.size(sessions)} + ' records'"></div>
+        </div>
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table class="table" role="table" aria-label="Active Sessions Table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Session Start</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="s : ${sessions}" class="tr-glow">
+                <td th:text="${s.email}">email</td>
+                <td th:text="${s.sessionStart != null ? #dates.format(s.sessionStart, 'yyyy-MM-dd HH:mm:ss') : ''}">start</td>
+                <td th:text="${s.sessionStatus}">status</td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(sessions)}">
+                <td colspan="3" style="color:rgba(231,241,255,.7);">No active sessions found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
+

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Login Logs - SOCAction</title>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+</head>
+<body>
+
+<div class="bg-grid" aria-hidden="true"></div>
+
+<header class="navbar">
+  <div class="nav-inner">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true"></div>
+      <div class="brand-title">
+        <strong>SOCAction</strong>
+        <span>Secure Authentication Monitoring</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a class="logout-btn" th:href="@{/dashboard}" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">Back to Dashboard</a>
+      <form th:action="@{/logout}" method="post" style="margin:0;">
+        <button class="logout-btn" type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="page-title">
+    <div>
+      <h1>Login Attempts</h1>
+      <p>Real data from <code>login_logs</code> table</p>
+    </div>
+  </div>
+
+  <section class="grid grid-table">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title">
+          <h2>Login Logs</h2>
+          <div class="sub" th:text="${#lists.size(loginLogs)} + ' records'"></div>
+        </div>
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table class="table" role="table" aria-label="Login Logs Table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Login Time</th>
+                <th>Status</th>
+                <th>IP Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="l : ${loginLogs}" class="tr-glow">
+                <td th:text="${l.email}">email</td>
+                <td th:text="${l.loginTime != null ? #dates.format(l.loginTime, 'yyyy-MM-dd HH:mm:ss') : ''}">time</td>
+                <td th:text="${l.status}">status</td>
+                <td th:text="${l.ipAddress}">ip</td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(loginLogs)}">
+                <td colspan="4" style="color:rgba(231,241,255,.7);">No login logs found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
+

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+
+        :root{
+            --bg1:#071b2a;
+            --bg2:#0b2e4f;
+            --bg3:#05111f;
+            --glass:rgba(255,255,255,0.08);
+            --glass-strong:rgba(255,255,255,0.12);
+            --text:#eaf2ff;
+            --muted:#cfd8e3;
+            --primary1:#00c6ff;
+            --primary2:#0072ff;
+            --danger:#ff4d6d;
+            --success:#21d19f;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:24px;
+            background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+            color:var(--text);
+        }
+
+        .shell{width:100%;max-width:470px;}
+
+        .card{
+            padding:28px;
+            border-radius:22px;
+            background:var(--glass);
+            backdrop-filter:blur(12px);
+            box-shadow:0 18px 50px rgba(0,0,0,0.42);
+            border:1px solid rgba(255,255,255,0.10);
+        }
+
+        .brand{display:flex;flex-direction:column;gap:6px;align-items:center;margin-bottom:18px;}
+        .brand h1{font-size:26px;letter-spacing:0.2px;}
+        .subtitle{color:var(--muted);font-size:14px;text-align:center;}
+
+        .input-group{margin-bottom:16px;}
+
+        .input-group label{
+            display:block;
+            margin-bottom:8px;
+            font-size:13px;
+            color:#dbe7ff;
+        }
+
+        .input-group input{
+            width:100%;
+            padding:13px 14px;
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,0.12);
+            background:rgba(255,255,255,0.10);
+            color:var(--text);
+            outline:none;
+            transition:transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+        }
+        .input-group input::placeholder{color:rgba(234,242,255,0.65)}
+
+        .input-group input:focus{
+            border-color:rgba(0,198,255,0.65);
+            box-shadow:0 0 0 4px rgba(0,198,255,0.14);
+            transform:translateY(-1px);
+        }
+
+        .btn{
+            width:100%;
+            padding:13px 14px;
+            border:none;
+            border-radius:12px;
+            color:white;
+            font-size:15px;
+            font-weight:600;
+            cursor:pointer;
+            background:linear-gradient(to right,var(--primary1),var(--primary2));
+            transition:transform 180ms ease, filter 180ms ease;
+            box-shadow:0 10px 26px rgba(0,114,255,0.25);
+        }
+
+        .btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+        .btn:active{transform:translateY(0px)}
+
+        .helper{
+            font-size:12px;
+            color:rgba(234,242,255,0.72);
+            margin-top:8px;
+        }
+
+        .strength{
+            margin-top:10px;
+            padding:12px;
+            border-radius:14px;
+            background:rgba(255,255,255,0.06);
+            border:1px solid rgba(255,255,255,0.10);
+        }
+
+        .strength .top{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-bottom:10px;
+        }
+
+        .strength .label{
+            font-size:13px;
+            color:#e8f2ff;
+        }
+
+        .strength .score{
+            font-size:12px;
+            color:rgba(234,242,255,0.75);
+        }
+
+        .bar{
+            height:10px;
+            border-radius:999px;
+            background:rgba(255,255,255,0.10);
+            overflow:hidden;
+        }
+
+        .bar > span{
+            display:block;
+            height:100%;
+            width:0%;
+            border-radius:999px;
+            background:linear-gradient(90deg,var(--danger),#ffb703,#00c6ff,var(--success));
+            transition:width 220ms ease;
+        }
+
+        .match{
+            display:none;
+            font-size:12px;
+            margin-top:8px;
+        }
+
+        .match.ok{color:rgba(33,209,159,0.95)}
+        .match.bad{color:rgba(255,77,109,0.95)}
+
+        .login-link{
+            margin-top:18px;
+            text-align:center;
+            color:rgba(234,242,255,0.85);
+            font-size:14px;
+        }
+
+        .login-link a{color:#57c6ff;text-decoration:none;transition:opacity 160ms ease;}
+        .login-link a:hover{opacity:0.9;text-decoration:underline;}
+
+        @media (max-width: 420px){
+            .card{padding:22px;border-radius:18px}
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="shell">
+    <div class="card">
+        <div class="brand">
+            <h1>Create Account</h1>
+            <p class="subtitle">Secure Authentication System</p>
+        </div>
+
+        <form th:action="@{/register}" method="post" autocomplete="on" novalidate>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" placeholder="Enter username" required autocomplete="username"/>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="Enter email" required autocomplete="email"/>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Create a strong password" required autocomplete="new-password"/>
+                <div class="strength" aria-live="polite">
+                    <div class="top">
+                        <span class="label">Password strength</span>
+                        <span class="score" id="strengthScore">—</span>
+                    </div>
+                    <div class="bar" aria-hidden="true"><span id="strengthBar"></span></div>
+                    <div class="helper" id="strengthHelp">Use a mix of uppercase, lowercase, numbers, and symbols.</div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Re-enter password" required autocomplete="new-password"/>
+                <div id="matchMsg" class="match">Passwords match</div>
+            </div>
+
+            <button type="submit" class="btn">Sign up</button>
+
+            <div class="login-link">
+                Already have an account? <a href="/login">Log in</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    const passwordEl = document.getElementById('password');
+    const confirmEl = document.getElementById('confirmPassword');
+    const barEl = document.getElementById('strengthBar');
+    const scoreEl = document.getElementById('strengthScore');
+    const helpEl = document.getElementById('strengthHelp');
+    const matchMsg = document.getElementById('matchMsg');
+
+    function strengthScore(pw){
+        let score = 0;
+        const lengthOK = pw.length >= 10;
+        const hasLower = /[a-z]/.test(pw);
+        const hasUpper = /[A-Z]/.test(pw);
+        const hasNumber = /[0-9]/.test(pw);
+        const hasSymbol = /[^A-Za-z0-9]/.test(pw);
+
+        if (lengthOK) score += 2;
+        if (hasLower) score += 1;
+        if (hasUpper) score += 1;
+        if (hasNumber) score += 1;
+        if (hasSymbol) score += 2;
+
+        // max ~7
+        return Math.min(score, 7);
+    }
+
+    function renderStrength(){
+        const pw = passwordEl.value;
+        const s = strengthScore(pw);
+
+        const pct = Math.round((s / 7) * 100);
+        barEl.style.width = pct + '%';
+
+        let label = 'Weak';
+        let help = 'Add length (10+), uppercase/lowercase, numbers, and symbols.';
+
+        if (pct >= 85) { label = 'Excellent'; help = 'Great password. Keep it unique.'; }
+        else if (pct >= 65) { label = 'Strong'; help = 'Good strength. Consider adding a symbol if missing.'; }
+        else if (pct >= 40) { label = 'Moderate'; help = 'Try improving variety: uppercase, numbers, and symbols.'; }
+        else if (pw.length === 0) { label = '—'; help = 'Use a mix of uppercase, lowercase, numbers, and symbols.'; }
+
+        scoreEl.textContent = label;
+        helpEl.textContent = help;
+    }
+
+    function renderMatch(){
+        const pw = passwordEl.value;
+        const cpw = confirmEl.value;
+        if (!cpw) {
+            matchMsg.style.display = 'none';
+            return;
+        }
+
+        const ok = pw === cpw;
+        matchMsg.style.display = 'block';
+        matchMsg.classList.remove('ok','bad');
+        matchMsg.classList.add(ok ? 'ok' : 'bad');
+        matchMsg.textContent = ok ? 'Passwords match' : 'Passwords do not match';
+        confirmEl.setCustomValidity(ok ? '' : 'Passwords do not match');
+    }
+
+    if (passwordEl) {
+        passwordEl.addEventListener('input', () => {
+            renderStrength();
+            renderMatch();
+        });
+    }
+    if (confirmEl) {
+        confirmEl.addEventListener('input', renderMatch);
+    }
+
+    // initial
+    renderStrength();
+    renderMatch();
+</script>
+
+</body>
+</html>
+
